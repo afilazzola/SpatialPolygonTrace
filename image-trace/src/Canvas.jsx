@@ -3,9 +3,12 @@ import { Button, Box } from "@mui/material";
 
 export default function Canvas() {
   const [isDrawing, setIsDrawing] = useState(false);
+  const [image, setImage] = useState(null);
+  const [xCoords, setXCoords] = useState([]);
+  const [yCoords, setYCoords] = useState([]);
+  const [finalCoords, setFinalCoords] = useState([]);
   const canvasRef = useRef(null);
   const contextRef = useRef(null);
-  const [image, setImage] = useState(null);
 
   const prepareCanvas = () => {
     const canvas = canvasRef.current;
@@ -32,6 +35,8 @@ export default function Canvas() {
   const finishDrawing = () => {
     contextRef.current.closePath();
     setIsDrawing(false);
+    setFinalCoords([xCoords, yCoords]);
+    console.log(arrayToCsv(finalCoords));
   };
 
   const draw = ({ nativeEvent }) => {
@@ -41,19 +46,35 @@ export default function Canvas() {
     const { offsetX, offsetY } = nativeEvent;
     contextRef.current.lineTo(offsetX, offsetY);
     contextRef.current.stroke();
+    setXCoords((xCoords) => [...xCoords, offsetX]);
+    setYCoords((yCoords) => [...yCoords, offsetY]);
   };
 
   const clearCanvas = () => {
     contextRef.current.drawImage(image, 0, 0);
   };
 
-  const saveDrawing = () => {
-    const canvas = canvasRef.current;
-    const dataURL = canvas.toDataURL("image/png");
-    const link = document.createElement("a");
-    link.download = "drawing.png";
-    link.href = dataURL;
-    link.click();
+  const arrayToCsv = (data) => {
+    return data
+      .map(
+        (row) =>
+          row
+            .map(String) // convert every value to String
+            .map((v) => v.replaceAll('"', '""')) // escape double colons
+            .map((v) => `"${v}"`) // quote it
+            .join(",") // comma-separated
+      )
+      .join("\r\n"); // rows starting on new lines
+  };
+
+  const saveCoordinates = () => {
+    const formattedCoords = arrayToCsv(finalCoords);
+    const data = new Blob(formattedCoords, { type: "text/txt" });
+    const csvURL = window.URL.createObjectURL(data);
+    const tempLink = document.createElement("a");
+    tempLink.href = csvURL;
+    tempLink.setAttribute("download", "Coordinates" + Date() + ".txt");
+    tempLink.click();
   };
 
   useEffect(() => {
@@ -91,15 +112,16 @@ export default function Canvas() {
           {"Clear"}
         </Button>
         <Button
+          onClick={saveCoordinates}
           sx={{ m: 1 }}
           variant="contained"
           size="large"
-          onClick={saveDrawing}
         >
           {"Save Drawing"}
         </Button>
       </Box>
       <canvas
+        id="canvas"
         onMouseDown={startDrawing}
         onMouseUp={finishDrawing}
         onMouseMove={draw}
