@@ -1,4 +1,4 @@
-import { AppBar, Toolbar, Typography, Button, IconButton } from "@mui/material";
+import { AppBar, Toolbar, Typography } from "@mui/material";
 
 export default function TopBar() {
   return (

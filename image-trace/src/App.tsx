@@ -31,7 +31,7 @@ function App() {
           component="main"
           sx={{
             flexGrow: 1,
-            bgcolor: "rgb(231, 235, 240)",
+            // bgcolor: "rgb(231, 235, 240)",
             p: 3,
             height: "100%",
           }}

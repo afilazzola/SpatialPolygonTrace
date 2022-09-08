@@ -5,6 +5,7 @@ export default function Canvas() {
   const [isDrawing, setIsDrawing] = useState(false);
   const canvasRef = useRef(null);
   const contextRef = useRef(null);
+  const [image, setImage] = useState(null);
 
   const prepareCanvas = () => {
     const canvas = canvasRef.current;
@@ -43,15 +44,35 @@ export default function Canvas() {
   };
 
   const clearCanvas = () => {
+    contextRef.current.drawImage(image, 0, 0);
+  };
+
+  const saveDrawing = () => {
     const canvas = canvasRef.current;
-    const context = canvas.getContext("2d");
-    context.fillStyle = "rgb(231, 235, 240)";
-    context.fillRect(0, 0, canvas.width, canvas.height);
+    const dataURL = canvas.toDataURL("image/png");
+    const link = document.createElement("a");
+    link.download = "drawing.png";
+    link.href = dataURL;
+    link.click();
   };
 
   useEffect(() => {
     prepareCanvas();
   }, []);
+
+  useEffect(() => {
+    const catImage = new Image();
+    catImage.src = "https://thiscatdoesnotexist.com/";
+    catImage.onload = () => {
+      setImage(catImage);
+    };
+  }, []);
+
+  useEffect(() => {
+    if (image && contextRef.current) {
+      contextRef.current.drawImage(image, 0, 0);
+    }
+  }, [image, contextRef]);
 
   return (
     <div>
@@ -61,8 +82,21 @@ export default function Canvas() {
         justifyContent="flex-start"
         alignItems="flex-start"
       >
-        <Button variant="contained" size="large" onClick={clearCanvas}>
+        <Button
+          sx={{ m: 1 }}
+          variant="contained"
+          size="large"
+          onClick={clearCanvas}
+        >
           {"Clear"}
+        </Button>
+        <Button
+          sx={{ m: 1 }}
+          variant="contained"
+          size="large"
+          onClick={saveDrawing}
+        >
+          {"Save Drawing"}
         </Button>
       </Box>
       <canvas
