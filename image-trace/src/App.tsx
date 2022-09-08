@@ -1,24 +1,44 @@
-import React from 'react';
-import logo from './logo.svg';
-import './App.css';
+import React from "react";
+import Canvas from "./Canvas";
+import "./App.css";
+import { createTheme, ThemeProvider, Box } from "@mui/material";
+import TopBar from "./Topbar";
+
+const theme = createTheme({
+  palette: {
+    primary: {
+      main: "#FF8C00",
+    },
+    secondary: {
+      main: "#B0E0E6",
+    },
+  },
+});
 
 function App() {
   return (
     <div className="App">
-      <header className="App-header">
-        <img src={logo} className="App-logo" alt="logo" />
-        <p>
-          Edit <code>src/App.tsx</code> and save to reload.
-        </p>
-        <a
-          className="App-link"
-          href="https://reactjs.org"
-          target="_blank"
-          rel="noopener noreferrer"
+      <ThemeProvider theme={theme}>
+        <Box
+          sx={{
+            display: "flex",
+            overflow: "hidden",
+          }}
         >
-          Learn React
-        </a>
-      </header>
+          <TopBar />
+        </Box>
+        <Box
+          component="main"
+          sx={{
+            flexGrow: 1,
+            bgcolor: "rgb(231, 235, 240)",
+            p: 3,
+            height: "100%",
+          }}
+        >
+          <Canvas />
+        </Box>
+      </ThemeProvider>
     </div>
   );
 }
