@@ -51,7 +51,7 @@ export default function Canvas() {
   };
 
   const clearCanvas = () => {
-    contextRef.current.drawImage(image, 0, 0);
+    contextRef.current.drawImage(image, 0, 0, 1000, 1000);
   };
 
   const arrayToCsv = (data) => {
@@ -96,7 +96,7 @@ export default function Canvas() {
 
   useEffect(() => {
     if (image && contextRef.current) {
-      contextRef.current.drawImage(image, 0, 0);
+      contextRef.current.drawImage(image, 0, 0, 1000, 1000);
     }
   }, [image, contextRef]);
 
