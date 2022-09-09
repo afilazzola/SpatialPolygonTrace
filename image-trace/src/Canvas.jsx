@@ -22,7 +22,7 @@ export default function Canvas() {
     context.scale(2, 2);
     context.lineCap = "round";
     context.strokeStyle = "black";
-    context.lineWidth = 5;
+    context.lineWidth = 3;
     contextRef.current = context;
   };
 
@@ -37,7 +37,6 @@ export default function Canvas() {
     contextRef.current.closePath();
     setIsDrawing(false);
     setFinalCoords([xCoords, yCoords]);
-    console.log(arrayToCsv(finalCoords));
   };
 
   const draw = ({ nativeEvent }) => {
@@ -84,12 +83,12 @@ export default function Canvas() {
 
   useEffect(() => {
     const fetchImage = async () => {
-      const catImage = new Image();
+      const traceImage = new Image();
       const imageRequest = await getImage("get");
-      catImage.src = imageRequest.request.responseURL;
-      catImage.crossOrigin = "Anonymous";
-      catImage.onload = () => {
-        setImage(catImage);
+      traceImage.src = imageRequest.request.responseURL;
+      traceImage.crossOrigin = "Anonymous";
+      traceImage.onload = () => {
+        setImage(traceImage);
       };
     };
     fetchImage();
