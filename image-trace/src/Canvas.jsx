@@ -69,11 +69,11 @@ export default function Canvas() {
 
   const saveCoordinates = () => {
     const formattedCoords = arrayToCsv(finalCoords);
-    const data = new Blob(formattedCoords, { type: "text/txt" });
+    const data = new Blob([formattedCoords], { type: "text/csv" });
     const csvURL = window.URL.createObjectURL(data);
     const tempLink = document.createElement("a");
     tempLink.href = csvURL;
-    tempLink.setAttribute("download", "Coordinates" + Date() + ".txt");
+    tempLink.setAttribute("download", "Coordinates" + Date() + ".csv");
     tempLink.click();
   };
 
