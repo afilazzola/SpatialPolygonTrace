@@ -1,4 +1,5 @@
 import React, { useEffect, useRef, useState } from "react";
+import { getImage, testApi } from "./api";
 import { Button, Box } from "@mui/material";
 
 export default function Canvas() {
@@ -82,11 +83,16 @@ export default function Canvas() {
   }, []);
 
   useEffect(() => {
-    const catImage = new Image();
-    catImage.src = "https://thiscatdoesnotexist.com/";
-    catImage.onload = () => {
-      setImage(catImage);
+    const fetchImage = async () => {
+      const catImage = new Image();
+      const imageRequest = await getImage("get");
+      catImage.src = imageRequest.request.responseURL;
+      catImage.crossOrigin = "Anonymous";
+      catImage.onload = () => {
+        setImage(catImage);
+      };
     };
+    fetchImage();
   }, []);
 
   useEffect(() => {
@@ -94,6 +100,12 @@ export default function Canvas() {
       contextRef.current.drawImage(image, 0, 0);
     }
   }, [image, contextRef]);
+
+  useEffect(() => {
+    testApi("get").then((res) => {
+      console.log(res);
+    });
+  }, []);
 
   return (
     <div>
